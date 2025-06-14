@@ -1,4 +1,3 @@
-
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -25,6 +24,9 @@ const Header = () => {
               </a>
               <Link to="/register" className="text-gray-600 hover:text-green-700 font-medium">
                 Register
+              </Link>
+              <Link to="/dashboard" className="text-gray-600 hover:text-green-700 font-medium">
+                Dashboard
               </Link>
               <a href="#leaderboard" className="text-gray-600 hover:text-green-700 font-medium">
                 Leaderboard
@@ -65,6 +67,9 @@ const Header = () => {
               </a>
               <Link to="/register" className="text-gray-600 hover:text-green-700 font-medium">
                 Register
+              </Link>
+              <Link to="/dashboard" className="text-gray-600 hover:text-green-700 font-medium">
+                Dashboard
               </Link>
               <a href="#leaderboard" className="text-gray-600 hover:text-green-700 font-medium">
                 Leaderboard
