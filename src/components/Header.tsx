@@ -2,6 +2,7 @@
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,17 +12,20 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-green-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">♟</span>
               </div>
               <span className="font-bold text-xl text-gray-900">Global Speed Chess</span>
-            </div>
+            </Link>
             
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#tournaments" className="text-gray-600 hover:text-green-700 font-medium">
                 Tournaments
               </a>
+              <Link to="/register" className="text-gray-600 hover:text-green-700 font-medium">
+                Register
+              </Link>
               <a href="#leaderboard" className="text-gray-600 hover:text-green-700 font-medium">
                 Leaderboard
               </a>
@@ -38,9 +42,11 @@ const Header = () => {
             <Button variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
               Sign In
             </Button>
-            <Button className="bg-green-700 hover:bg-green-800 text-white">
-              Register
-            </Button>
+            <Link to="/register">
+              <Button className="bg-green-700 hover:bg-green-800 text-white">
+                Register
+              </Button>
+            </Link>
           </div>
           
           <button
@@ -57,6 +63,9 @@ const Header = () => {
               <a href="#tournaments" className="text-gray-600 hover:text-green-700 font-medium">
                 Tournaments
               </a>
+              <Link to="/register" className="text-gray-600 hover:text-green-700 font-medium">
+                Register
+              </Link>
               <a href="#leaderboard" className="text-gray-600 hover:text-green-700 font-medium">
                 Leaderboard
               </a>
@@ -70,9 +79,11 @@ const Header = () => {
                 <Button variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
                   Sign In
                 </Button>
-                <Button className="bg-green-700 hover:bg-green-800 text-white">
-                  Register
-                </Button>
+                <Link to="/register">
+                  <Button className="bg-green-700 hover:bg-green-800 text-white">
+                    Register
+                  </Button>
+                </Link>
               </div>
             </nav>
           </div>
