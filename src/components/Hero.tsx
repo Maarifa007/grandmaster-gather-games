@@ -20,7 +20,7 @@ const Hero = () => {
             </h1>
             
             <p className="text-xl text-gray-600 leading-relaxed">
-              Join the Global Speed Chess Initiative and compete in high-stakes blitz tournaments 
+              Join the Global Speed Chess <span className="text-4xl md:text-6xl font-bold text-gray-900">INITIATIVE</span> and compete in high-stakes blitz tournaments 
               while supporting hospitals, libraries, and youth programs worldwide.
             </p>
             
