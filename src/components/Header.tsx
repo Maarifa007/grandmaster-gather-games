@@ -16,7 +16,6 @@ const Header = () => {
                 <span className="text-white font-bold text-sm">♟</span>
               </div>
               <span className="font-bold text-xl text-gray-900">Global Speed Chess</span>
-              <span className="text-4xl md:text-6xl font-bold text-gray-900">INITIATIVE</span>
             </div>
             
             <nav className="hidden md:flex items-center space-x-6">
