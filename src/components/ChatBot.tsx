@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Crown, Zap } from 'lucide-react';
+import { MessageCircle, X, Send, Crown, Zap, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -38,10 +37,21 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Auto-open chatbot after 4 seconds if not dismissed in this session
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!sessionStorage.getItem('chatbotDismissed')) {
+        setIsOpen(true);
+      }
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       addBotMessage(
-        "👋 Welcome to the Global Speed Chess Initiative! Ready to play in tonight's rated blitz tournament — or support chess in schools and prisons?",
+        "Hi there! 👋 Want to join a blitz tournament or support chess in schools? I can help.",
         ['🎯 Register for Tournament', '💛 Make a Donation', '👑 View Membership Plans']
       );
     }
@@ -66,6 +76,14 @@ const ChatBot = () => {
       timestamp: new Date(),
     };
     setMessages(prev => [...prev, newMessage]);
+  };
+
+  const toggleChat = () => {
+    if (isOpen) {
+      // When closing, mark as dismissed for this session
+      sessionStorage.setItem('chatbotDismissed', 'true');
+    }
+    setIsOpen(!isOpen);
   };
 
   const handleOptionClick = (option: string) => {
@@ -201,8 +219,8 @@ const ChatBot = () => {
   if (!isOpen) {
     return (
       <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-green-700 hover:bg-green-800 shadow-lg z-50"
+        onClick={toggleChat}
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-green-700 hover:bg-green-800 shadow-lg z-50 animate-pulse"
         size="icon"
       >
         <MessageCircle className="h-6 w-6 text-white" />
@@ -218,12 +236,12 @@ const ChatBot = () => {
           <span className="font-bold">BlitzBot</span>
         </div>
         <Button
-          onClick={() => setIsOpen(false)}
+          onClick={toggleChat}
           variant="ghost"
           size="icon"
           className="text-white hover:bg-green-600"
         >
-          <X className="h-4 w-4" />
+          <ChevronDown className="h-4 w-4" />
         </Button>
       </div>
 
