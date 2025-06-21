@@ -4,7 +4,7 @@ import { MessageCircle, ChevronDown, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useChatBot } from '@/hooks/useChatBot';
-import { ChatFlowHandler } from '@/components/chat/ChatFlowHandler';
+import { useChatFlowHandler } from '@/hooks/useChatFlowHandler';
 import { ChatMessages } from '@/components/chat/ChatMessages';
 import { ChatInput } from '@/components/chat/ChatInput';
 
@@ -24,6 +24,17 @@ const ChatBot = () => {
     addBotMessage,
     addUserMessage
   } = useChatBot();
+
+  const { handleOptionClick, handleInputSubmit } = useChatFlowHandler({
+    currentFlow,
+    currentStep,
+    userData,
+    setCurrentFlow,
+    setCurrentStep,
+    setUserData,
+    addBotMessage,
+    addUserMessage
+  });
 
   // Auto-open chatbot after 4 seconds if not dismissed in this session
   useEffect(() => {
@@ -52,17 +63,6 @@ const ChatBot = () => {
     }
     setIsOpen(!isOpen);
   };
-
-  const flowHandler = ChatFlowHandler({
-    currentFlow,
-    currentStep,
-    userData,
-    setCurrentFlow,
-    setCurrentStep,
-    setUserData,
-    addBotMessage,
-    addUserMessage
-  });
 
   if (!isOpen) {
     return (
@@ -95,14 +95,14 @@ const ChatBot = () => {
 
       <ChatMessages 
         messages={messages}
-        onOptionClick={flowHandler.handleOptionClick}
+        onOptionClick={handleOptionClick}
         messagesEndRef={messagesEndRef}
       />
 
       <ChatInput
         currentInput={currentInput}
         setCurrentInput={setCurrentInput}
-        onSubmit={flowHandler.handleInputSubmit}
+        onSubmit={handleInputSubmit}
       />
     </Card>
   );
