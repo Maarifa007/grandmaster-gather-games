@@ -58,7 +58,10 @@ export type Database = {
           id: string
           location: string
           name: string
+          setup_instructions: string | null
           time_control: string
+          tornelo_link: string | null
+          zoom_link: string | null
         }
         Insert: {
           created_at?: string | null
@@ -66,7 +69,10 @@ export type Database = {
           id?: string
           location: string
           name: string
+          setup_instructions?: string | null
           time_control: string
+          tornelo_link?: string | null
+          zoom_link?: string | null
         }
         Update: {
           created_at?: string | null
@@ -74,7 +80,10 @@ export type Database = {
           id?: string
           location?: string
           name?: string
+          setup_instructions?: string | null
           time_control?: string
+          tornelo_link?: string | null
+          zoom_link?: string | null
         }
         Relationships: []
       }
@@ -182,6 +191,63 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      tournament_registrations: {
+        Row: {
+          current_rating: number | null
+          email: string
+          id: string
+          platform: string
+          platform_username: string
+          registered_at: string
+          setup_completed: boolean | null
+          tournament_id: string
+          uscf_id: string | null
+          user_id: string
+          zoom_joined: boolean | null
+        }
+        Insert: {
+          current_rating?: number | null
+          email: string
+          id?: string
+          platform: string
+          platform_username: string
+          registered_at?: string
+          setup_completed?: boolean | null
+          tournament_id: string
+          uscf_id?: string | null
+          user_id: string
+          zoom_joined?: boolean | null
+        }
+        Update: {
+          current_rating?: number | null
+          email?: string
+          id?: string
+          platform?: string
+          platform_username?: string
+          registered_at?: string
+          setup_completed?: boolean | null
+          tournament_id?: string
+          uscf_id?: string | null
+          user_id?: string
+          zoom_joined?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_registrations_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_registrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {

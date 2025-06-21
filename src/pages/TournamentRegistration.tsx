@@ -6,9 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Heart, Trophy, Users, CheckCircle } from 'lucide-react';
+import { Heart, Trophy, Users, CheckCircle, ExternalLink, Monitor } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { TournamentSetup } from '@/components/tournament/TournamentSetup';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const TournamentRegistration = () => {
   const [platform, setPlatform] = useState<string>('');
@@ -18,27 +21,115 @@ const TournamentRegistration = () => {
   const [email, setEmail] = useState('');
   const [selectedTournament, setSelectedTournament] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
   const [donationAmount, setDonationAmount] = useState<string>('');
+  const [selectedTournamentData, setSelectedTournamentData] = useState<any>(null);
+  const { toast } = useToast();
 
   const tournaments = [
-    { id: '1', name: 'Tuesday 3+2 Blitz', time: '7:00PM PT', date: 'March 2nd' },
-    { id: '2', name: 'Wednesday 5+0 Blitz', time: '7:00PM PT', date: 'March 3rd' },
-    { id: '3', name: 'Thursday 7+5 Blitz', time: '7:00PM PT', date: 'March 4th' },
-    { id: '4', name: 'Friday 3+2 Rapid', time: '8:00PM PT', date: 'March 5th' },
+    { 
+      id: '1', 
+      name: 'Tuesday 3+2 Blitz', 
+      time: '7:00PM PT', 
+      date: 'March 2nd',
+      zoom_link: 'https://zoom.us/j/example123',
+      tornelo_link: 'https://tornelo.com/tournament/example',
+      setup_instructions: 'Please ensure you have:\n• Stable internet connection\n• Chess.com or Lichess account ready\n• Zoom app installed\n• Screen sharing enabled\n• Quiet environment for fair play'
+    },
+    { 
+      id: '2', 
+      name: 'Wednesday 5+0 Blitz', 
+      time: '7:00PM PT', 
+      date: 'March 3rd',
+      zoom_link: 'https://zoom.us/j/example456',
+      tornelo_link: 'https://tornelo.com/tournament/example2',
+      setup_instructions: 'Tournament setup requirements:\n• Download Zoom desktop app\n• Test your microphone and camera\n• Join 10 minutes early\n• Have your chess platform ready'
+    },
+    { 
+      id: '3', 
+      name: 'Thursday 7+5 Blitz', 
+      time: '7:00PM PT', 
+      date: 'March 4th',
+      zoom_link: 'https://zoom.us/j/example789',
+      tornelo_link: 'https://tornelo.com/tournament/example3',
+      setup_instructions: 'Pre-tournament checklist:\n• Ensure good lighting for camera\n• Close unnecessary applications\n• Have water and snacks ready\n• Disable notifications during play'
+    },
+    { 
+      id: '4', 
+      name: 'Friday 3+2 Rapid', 
+      time: '8:00PM PT', 
+      date: 'March 5th',
+      zoom_link: 'https://zoom.us/j/example101',
+      tornelo_link: 'https://tornelo.com/tournament/example4',
+      setup_instructions: 'Important setup steps:\n• Update your chess platform\n• Test screen sharing functionality\n• Prepare backup internet connection\n• Review fair play guidelines'
+    },
   ];
 
-  const handlePayment = () => {
-    // Simulate payment processing
-    setTimeout(() => {
-      setIsRegistered(true);
-    }, 1500);
+  const handlePayment = async () => {
+    if (!selectedTournament || !platform || !username || !email) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Here you would integrate with your payment processor
+      // For now, we'll simulate the registration process
+      
+      const tournamentData = tournaments.find(t => t.id === selectedTournament);
+      setSelectedTournamentData(tournamentData);
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        setIsRegistered(true);
+        toast({
+          title: "Registration successful!",
+          description: "Check your email for tournament details and join links.",
+        });
+      }, 1500);
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: "Please try again or contact support",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDonation = (amount: string) => {
     setDonationAmount(amount);
-    // Handle donation processing
     console.log(`Processing donation: $${amount}`);
+    toast({
+      title: "Thank you for your donation!",
+      description: `Your $${amount} donation will help support chess education.`,
+    });
   };
+
+  const handleSetupComplete = () => {
+    setShowSetup(false);
+    toast({
+      title: "Setup completed!",
+      description: "You're all set for the tournament. Good luck!",
+    });
+  };
+
+  if (showSetup && selectedTournamentData) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
+          <TournamentSetup 
+            tournament={selectedTournamentData}
+            onSetupComplete={handleSetupComplete}
+          />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (isRegistered) {
     return (
@@ -52,16 +143,52 @@ const TournamentRegistration = () => {
               </div>
               <CardTitle className="text-2xl text-green-700">Registration Confirmed!</CardTitle>
               <CardDescription className="text-lg">
-                You'll receive a join link and round instructions via email within 2–3 minutes.
+                Tournament links and setup instructions have been sent to your email.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="font-semibold text-green-800 mb-2">What's Next?</h3>
-                <p className="text-green-700">
-                  Check your email for tournament details and the join link. 
-                  Make sure to join 10 minutes before the start time.
-                </p>
+                <h3 className="font-semibold text-green-800 mb-4">Tournament Details</h3>
+                <div className="space-y-2 text-left">
+                  <div className="flex justify-between">
+                    <span className="text-green-700">Tournament:</span>
+                    <span className="font-medium">{selectedTournamentData?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-green-700">Date & Time:</span>
+                    <span className="font-medium">{selectedTournamentData?.date} at {selectedTournamentData?.time}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-center">
+                <Button 
+                  onClick={() => setShowSetup(true)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Monitor className="h-4 w-4 mr-2" />
+                  Start Setup
+                </Button>
+                {selectedTournamentData?.zoom_link && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.open(selectedTournamentData.zoom_link, '_blank')}
+                    className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Join Zoom
+                  </Button>
+                )}
+                {selectedTournamentData?.tornelo_link && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.open(selectedTournamentData.tornelo_link, '_blank')}
+                    className="border-green-200 text-green-700 hover:bg-green-50"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View Tornelo
+                  </Button>
+                )}
               </div>
               
               <div className="border-t pt-6">
