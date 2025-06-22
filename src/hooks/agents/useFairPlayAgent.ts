@@ -17,7 +17,7 @@ export const useFairPlayAgent = () => {
       return handleFairPlayRules();
     }
 
-    if (lowerMessage.includes('mobile') || lowerMessage.includes('phone')) {
+    if (lowerMessage.includes('mobile') || lowerMessage.includes('phone') || lowerMessage.includes('can i use my phone')) {
       return handleMobileSetup();
     }
 
@@ -25,15 +25,15 @@ export const useFairPlayAgent = () => {
       message: "I'll help you get tournament-ready! 🎯\n\n" +
               "I can help with:\n" +
               "🖥️ Zoom setup and screen sharing\n" +
-              "📱 Camera positioning and lighting\n" +
+              "📱 Mobile device setup and camera\n" +
               "⚖️ Fair play guidelines\n" +
-              "📲 Mobile device setup\n\n" +
+              "📲 Camera positioning and lighting\n\n" +
               "What do you need help with?",
       options: [
         "🖥️ Zoom Setup Guide",
+        "📱 How do I play on mobile?",
         "📷 Camera Setup",
-        "⚖️ Fair Play Rules",
-        "📱 Mobile Setup"
+        "⚖️ Fair Play Rules"
       ]
     };
   };
@@ -41,17 +41,22 @@ export const useFairPlayAgent = () => {
   const handleZoomSetup = (): AgentResponse => {
     return {
       message: "Zoom Setup Guide 🖥️\n\n" +
-              "**Required Steps:**\n" +
-              "1️⃣ Download Zoom desktop app (mobile works too)\n" +
+              "**Desktop Setup:**\n" +
+              "1️⃣ Download Zoom desktop app (required)\n" +
               "2️⃣ Test your microphone and camera\n" +
               "3️⃣ Join 10 minutes early for tech check\n" +
-              "4️⃣ Enable screen sharing permissions\n" +
-              "5️⃣ Close unnecessary apps and notifications\n\n" +
-              "**Important:** You'll get the Zoom link in your confirmation email!",
+              "4️⃣ Share your full screen (not just browser)\n" +
+              "5️⃣ Keep camera and game visible throughout\n\n" +
+              "**Mobile Setup:**\n" +
+              "1️⃣ Join Zoom via mobile app\n" +
+              "2️⃣ Tap Share → Screen → Start Broadcast\n" +
+              "3️⃣ Your camera stays in floating overlay\n" +
+              "4️⃣ Keep camera overlay visible and unobstructed\n\n" +
+              "You'll get the Zoom link in your confirmation email!",
       options: [
-        "📱 Mobile Zoom Setup",
+        "📱 Mobile Setup Details",
         "🎤 Audio/Video Test",
-        "🖥️ Screen Sharing Help",
+        "🖥️ Desktop Requirements",
         "✅ I'm Ready!"
       ]
     };
@@ -67,8 +72,8 @@ export const useFairPlayAgent = () => {
               "✅ No one else visible in frame\n\n" +
               "**Screen Setup:**\n" +
               "✅ Share your chess platform screen\n" +
-              "✅ Keep camera in floating window\n" +
-              "✅ Both visible to arbiters\n\n" +
+              "✅ Keep camera in floating window (mobile)\n" +
+              "✅ Both visible to arbiters at all times\n\n" +
               "This ensures fair play for everyone! 🤝",
       options: [
         "💡 Lighting Tips",
@@ -105,15 +110,24 @@ export const useFairPlayAgent = () => {
   const handleMobileSetup = (): AgentResponse => {
     return {
       message: "Mobile Tournament Setup 📱\n\n" +
-              "**Setup Options:**\n" +
-              "🔹 **Option 1:** Phone for Zoom + Tablet for chess\n" +
-              "🔹 **Option 2:** Single device with split screen\n\n" +
-              "**Best Practice Setup:**\n" +
-              "1️⃣ Position phone to show hands + chess screen\n" +
-              "2️⃣ Use phone tripod or stable surface\n" +
-              "3️⃣ Keep Zoom camera floating over chess app\n" +
-              "4️⃣ Ensure good lighting and stable wifi\n\n" +
-              "**Pro Tip:** Desktop is easier, but mobile works great with proper setup!",
+              "**Yes, you can play on your phone!**\n\n" +
+              "**Step-by-Step Mobile Setup:**\n" +
+              "1️⃣ Join Zoom via mobile app\n" +
+              "2️⃣ Tap Share → Screen → Start Broadcast\n" +
+              "3️⃣ Your Tornelo screen becomes visible to arbiters\n" +
+              "4️⃣ Your camera stays on in a floating overlay\n" +
+              "5️⃣ Keep camera overlay unobstructed at all times\n\n" +
+              "**Key Points:**\n" +
+              "✅ Your game screen is shared\n" +
+              "✅ You remain visible via floating camera window\n" +
+              "✅ Arbiters can see both your moves and you\n" +
+              "⚠️ DON'T cover or hide the camera bubble!\n\n" +
+              "**Pro Tips:**\n" +
+              "• Use a phone stand for stability\n" +
+              "• Ensure good lighting\n" +
+              "• Test before tournament starts\n" +
+              "• Keep charger handy\n" +
+              "• Stable WiFi is essential",
       options: [
         "📱 Single Device Setup",
         "📱📱 Two Device Setup",

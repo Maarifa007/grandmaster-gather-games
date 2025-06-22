@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { Heart, Trophy, Users, CheckCircle, ExternalLink, Monitor } from 'lucide
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { TournamentSetup } from '@/components/tournament/TournamentSetup';
+import ZoomMobileSetupGuide from '@/components/ZoomMobileSetupGuide';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -161,7 +161,7 @@ const TournamentRegistration = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-3 justify-center flex-wrap">
                 <Button 
                   onClick={() => setShowSetup(true)}
                   className="bg-blue-600 hover:bg-blue-700"
@@ -169,6 +169,7 @@ const TournamentRegistration = () => {
                   <Monitor className="h-4 w-4 mr-2" />
                   Start Setup
                 </Button>
+                <ZoomMobileSetupGuide />
                 {selectedTournamentData?.zoom_link && (
                   <Button 
                     variant="outline"
@@ -239,6 +240,15 @@ const TournamentRegistration = () => {
               Register for a USCF-Rated Blitz Tournament
             </h1>
             <p className="text-gray-600">Fast registration, secure payment, and instant confirmation</p>
+            <div className="mt-4 flex justify-center">
+              <ZoomMobileSetupGuide 
+                trigger={
+                  <Button variant="outline" size="sm">
+                    📱 Can I play on mobile?
+                  </Button>
+                }
+              />
+            </div>
           </div>
 
           <Card>

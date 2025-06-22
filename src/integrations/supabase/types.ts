@@ -194,6 +194,7 @@ export type Database = {
       }
       tournament_registrations: {
         Row: {
+          camera_overlay_confirmed: boolean | null
           current_rating: number | null
           email: string
           id: string
@@ -205,8 +206,10 @@ export type Database = {
           uscf_id: string | null
           user_id: string
           zoom_joined: boolean | null
+          zoom_ready: boolean | null
         }
         Insert: {
+          camera_overlay_confirmed?: boolean | null
           current_rating?: number | null
           email: string
           id?: string
@@ -218,8 +221,10 @@ export type Database = {
           uscf_id?: string | null
           user_id: string
           zoom_joined?: boolean | null
+          zoom_ready?: boolean | null
         }
         Update: {
+          camera_overlay_confirmed?: boolean | null
           current_rating?: number | null
           email?: string
           id?: string
@@ -231,6 +236,7 @@ export type Database = {
           uscf_id?: string | null
           user_id?: string
           zoom_joined?: boolean | null
+          zoom_ready?: boolean | null
         }
         Relationships: [
           {

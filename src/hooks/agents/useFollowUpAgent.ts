@@ -18,19 +18,75 @@ export const useFollowUpAgent = () => {
       return await handleScheduleInfo(context);
     }
 
+    if (lowerMessage.includes('mobile') || lowerMessage.includes('phone') || lowerMessage.includes('how do i use zoom') || lowerMessage.includes('can i use my phone')) {
+      return handleMobileZoomSetup();
+    }
+
+    if (lowerMessage.includes('zoom setup') || lowerMessage.includes('zoom help')) {
+      return handleZoomSetupHelp();
+    }
+
     return {
-      message: "I help with tournament follow-up and reminders! 📧\n\n" +
+      message: "I help with tournament follow-up and setup! 📧\n\n" +
               "I can:\n" +
               "• Send tournament reminders\n" +
+              "• Help with Zoom setup (mobile & desktop)\n" +
               "• Confirm your registration status\n" +
               "• Provide schedule updates\n" +
-              "• Help with pre-tournament setup\n\n" +
+              "• Guide you through mobile setup\n\n" +
               "What would you like help with?",
       options: [
         "🔔 Set Up Reminders",
+        "📱 Mobile Zoom Setup",
         "✅ Check Registration Status",
-        "📅 Tournament Schedule",
-        "⚙️ Pre-Tournament Setup"
+        "📅 Tournament Schedule"
+      ]
+    };
+  };
+
+  const handleMobileZoomSetup = (): AgentResponse => {
+    return {
+      message: "Mobile Zoom Setup Guide 📱\n\n" +
+              "**Great news! You can absolutely play on your phone!**\n\n" +
+              "**Quick Setup Steps:**\n" +
+              "1️⃣ Join Zoom via the mobile app\n" +
+              "2️⃣ Tap **Share → Screen → Start Broadcast**\n" +
+              "3️⃣ Your chess game screen is now visible\n" +
+              "4️⃣ Your camera overlay stays floating on top\n" +
+              "5️⃣ Keep that camera bubble visible!\n\n" +
+              "**Why This Works:**\n" +
+              "✅ Arbiters see your game moves\n" +
+              "✅ Arbiters see you via floating camera\n" +
+              "✅ Fair play monitoring is maintained\n\n" +
+              "**Important:** Don't cover or minimize the camera overlay - that's how arbiters verify fair play!",
+      options: [
+        "📱 Detailed Mobile Guide",
+        "💡 Mobile Pro Tips",
+        "🔧 Troubleshooting",
+        "✅ I'm Ready for Mobile Play"
+      ]
+    };
+  };
+
+  const handleZoomSetupHelp = (): AgentResponse => {
+    return {
+      message: "Zoom Setup Help 🖥️📱\n\n" +
+              "**Desktop Setup:**\n" +
+              "1️⃣ Download Zoom desktop app\n" +
+              "2️⃣ Test camera and microphone\n" +
+              "3️⃣ Share full screen (not just browser)\n" +
+              "4️⃣ Keep camera window visible\n\n" +
+              "**Mobile Setup:**\n" +
+              "1️⃣ Use Zoom mobile app\n" +
+              "2️⃣ Enable screen sharing permissions\n" +
+              "3️⃣ Share screen → Start broadcast\n" +
+              "4️⃣ Camera overlay remains active\n\n" +
+              "**Both platforms work great for tournaments!**",
+      options: [
+        "📱 Focus on Mobile Setup",
+        "💻 Focus on Desktop Setup",
+        "🎯 Fair Play Requirements",
+        "✅ Setup Complete"
       ]
     };
   };
@@ -42,11 +98,13 @@ export const useFollowUpAgent = () => {
               "✅ Confirmation email immediately\n" +
               "✅ Setup reminder 24 hours before\n" +
               "✅ Final reminder 30 minutes before\n" +
-              "✅ Zoom link and bracket information\n\n" +
+              "✅ Zoom link and bracket information\n" +
+              "✅ Mobile setup guide if needed\n\n" +
               "Your reminders are now active!",
       options: [
         "📧 Update Email Preferences",
-        "📱 Add to Calendar",
+        "📱 Mobile Setup Guide",
+        "📅 Add to Calendar",
         "🏆 View Tournament Details"
       ],
       actions: [
@@ -86,10 +144,12 @@ export const useFollowUpAgent = () => {
                   `Date: ${registration.events.date}\n` +
                   `Platform: ${registration.platform}\n` +
                   `Username: ${registration.platform_username}\n` +
-                  `Setup Status: ${registration.setup_completed ? '✅ Complete' : '⏳ Pending'}\n\n` +
+                  `Setup Status: ${registration.setup_completed ? '✅ Complete' : '⏳ Pending'}\n` +
+                  `Zoom Ready: ${registration.zoom_ready ? '✅ Yes' : '⏳ Not yet'}\n\n` +
                   `Everything looks good for your tournament!`,
           options: [
             "🔧 Complete Setup",
+            "📱 Mobile Setup Guide",
             "✏️ Update Details",
             "📧 Resend Confirmation"
           ]
@@ -120,9 +180,11 @@ export const useFollowUpAgent = () => {
 
         return {
           message: `Here's the upcoming tournament schedule:\n\n${scheduleText}\n\n` +
+                  `All tournaments support both desktop and mobile play!\n` +
                   `All tournaments are USCF-rated with cash prizes!`,
           options: [
             "🏆 Register for Tournament",
+            "📱 Mobile Setup Help",
             "📧 Subscribe to Updates",
             "⏰ Add to Calendar"
           ]
