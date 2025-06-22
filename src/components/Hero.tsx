@@ -135,90 +135,13 @@ const Hero = () => {
             </div>
           </div>
           
-          <div className="relative h-[500px] overflow-hidden">
-            {/* Floating Chess Pieces */}
-            <div className="absolute inset-0">
-              {/* Row 1 - Top */}
-              <div className="absolute top-12 left-16 text-6xl text-green-600 animate-bounce opacity-80">
-                ♔
-              </div>
-              <div className="absolute top-16 right-8 text-5xl text-amber-500 animate-pulse opacity-85" style={{animationDelay: '1.5s'}}>
-                ♗
-              </div>
-              <div className="absolute top-8 left-40 text-4xl text-amber-800 animate-pulse opacity-70" style={{animationDelay: '3.5s'}}>
-                ♜
-              </div>
-              <div className="absolute top-20 right-32 text-5xl text-green-500 animate-bounce opacity-75" style={{animationDelay: '4s'}}>
-                ♞
-              </div>
-              
-              {/* Row 2 - Upper Middle */}
-              <div className="absolute top-32 right-20 text-5xl text-amber-600 animate-pulse opacity-90" style={{animationDelay: '0.5s'}}>
-                ♕
-              </div>
-              <div className="absolute top-40 left-32 text-4xl text-amber-700 animate-pulse opacity-80" style={{animationDelay: '2.5s'}}>
-                ♙
-              </div>
-              <div className="absolute top-28 left-8 text-3xl text-green-400 animate-bounce opacity-65" style={{animationDelay: '4.5s'}}>
-                ♟
-              </div>
-              <div className="absolute top-36 right-4 text-4xl text-amber-500 animate-pulse opacity-75" style={{animationDelay: '5s'}}>
-                ♚
-              </div>
-              
-              {/* Row 3 - Center */}
-              <div className="absolute top-56 left-20 text-5xl text-green-700 animate-bounce opacity-80" style={{animationDelay: '1.8s'}}>
-                ♛
-              </div>
-              <div className="absolute top-52 right-24 text-4xl text-amber-600 animate-pulse opacity-70" style={{animationDelay: '2.2s'}}>
-                ♝
-              </div>
-              <div className="absolute top-60 left-48 text-3xl text-green-600 animate-bounce opacity-85" style={{animationDelay: '5.5s'}}>
-                ♜
-              </div>
-              
-              {/* Row 4 - Lower Middle */}
-              <div className="absolute bottom-40 left-8 text-4xl text-green-700 animate-bounce opacity-70" style={{animationDelay: '1s'}}>
-                ♖
-              </div>
-              <div className="absolute bottom-32 left-24 text-3xl text-green-500 animate-bounce opacity-60" style={{animationDelay: '3s'}}>
-                ♗
-              </div>
-              <div className="absolute bottom-36 right-12 text-4xl text-amber-700 animate-pulse opacity-80" style={{animationDelay: '3.8s'}}>
-                ♘
-              </div>
-              <div className="absolute bottom-44 right-40 text-3xl text-green-800 animate-bounce opacity-65" style={{animationDelay: '6s'}}>
-                ♟
-              </div>
-              
-              {/* Row 5 - Bottom */}
-              <div className="absolute bottom-20 right-16 text-6xl text-green-800 animate-bounce opacity-75" style={{animationDelay: '2s'}}>
-                ♘
-              </div>
-              <div className="absolute bottom-16 left-12 text-4xl text-amber-600 animate-pulse opacity-75" style={{animationDelay: '4.2s'}}>
-                ♙
-              </div>
-              <div className="absolute bottom-12 left-36 text-3xl text-green-600 animate-bounce opacity-70" style={{animationDelay: '6.5s'}}>
-                ♞
-              </div>
-              <div className="absolute bottom-8 right-28 text-4xl text-amber-800 animate-pulse opacity-85" style={{animationDelay: '7s'}}>
-                ♚
-              </div>
-              
-              {/* Additional scattered pieces for density */}
-              <div className="absolute top-48 left-4 text-3xl text-green-400 animate-pulse opacity-60" style={{animationDelay: '7.5s'}}>
-                ♟
-              </div>
-              <div className="absolute top-24 left-60 text-3xl text-amber-500 animate-bounce opacity-65" style={{animationDelay: '8s'}}>
-                ♙
-              </div>
-              <div className="absolute bottom-28 left-52 text-3xl text-green-700 animate-pulse opacity-70" style={{animationDelay: '8.5s'}}>
-                ♝
-              </div>
-            </div>
-            
-            {/* Background gradient circle for visual interest */}
-            <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 to-amber-100/30 rounded-full transform scale-150 -translate-y-10"></div>
+          <div className="relative h-[500px] overflow-hidden flex items-center justify-center">
+            {/* GSCI Hero Image */}
+            <img 
+              src="/assets/gsci_hero.png" 
+              alt="GSCI Tournament Chess Board" 
+              className="w-full h-full object-cover rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </div>

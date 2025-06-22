@@ -1,71 +1,164 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, Trophy, Video, DollarSign, Download } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+
+interface OverviewMetrics {
+  totalPlayersToday: number;
+  activeTournaments: number;
+  zoomConfirmedPercent: number;
+  payoutsSentToday: number;
+}
+
+interface Tournament {
+  id: string;
+  name: string;
+  date: string;
+  time_control: string;
+  playerCount: number;
+  zoomReady: number;
+  status: string;
+}
+
+interface Player {
+  id: string;
+  name: string;
+  email: string;
+  rating: number;
+  zoomReady: boolean;
+  tournament: string;
+  status: string;
+}
 
 const AdminDashboard = () => {
-  // Mock data - in real app, this would come from Supabase
-  const overviewMetrics = {
-    totalPlayersToday: 42,
-    activeTournaments: 3,
-    zoomConfirmedPercent: 87,
-    payoutsSentToday: 12
+  // Fetch overview metrics
+  const { data: metrics, isLoading: metricsLoading } = useQuery({
+    queryKey: ['admin-metrics'],
+    queryFn: async (): Promise<OverviewMetrics> => {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Total players registered today
+      const { count: playersToday } = await supabase
+        .from('tournament_registrations')
+        .select('*', { count: 'exact', head: true })
+        .gte('registered_at', `${today}T00:00:00`)
+        .lt('registered_at', `${today}T23:59:59`);
+
+      // Active tournaments
+      const { count: activeTournaments } = await supabase
+        .from('events')
+        .select('*', { count: 'exact', head: true })
+        .gte('date', today);
+
+      // Zoom compliance percentage
+      const { data: zoomData } = await supabase
+        .from('tournament_registrations')
+        .select('zoom_ready');
+      
+      const zoomReadyCount = zoomData?.filter(r => r.zoom_ready).length || 0;
+      const totalRegistrations = zoomData?.length || 1;
+      const zoomPercent = Math.round((zoomReadyCount / totalRegistrations) * 100);
+
+      // Payouts sent today (using setup_completed as proxy for payout status)
+      const { count: payoutsToday } = await supabase
+        .from('tournament_registrations')
+        .select('*', { count: 'exact', head: true })
+        .eq('setup_completed', true)
+        .gte('registered_at', `${today}T00:00:00`)
+        .lt('registered_at', `${today}T23:59:59`);
+
+      return {
+        totalPlayersToday: playersToday || 0,
+        activeTournaments: activeTournaments || 0,
+        zoomConfirmedPercent: zoomPercent,
+        payoutsSentToday: payoutsToday || 0
+      };
+    }
+  });
+
+  // Fetch tournaments data
+  const { data: tournaments, isLoading: tournamentsLoading } = useQuery({
+    queryKey: ['admin-tournaments'],
+    queryFn: async (): Promise<Tournament[]> => {
+      const { data, error } = await supabase
+        .from('events')
+        .select(`
+          id,
+          name,
+          date,
+          time_control,
+          tournament_registrations!inner(
+            id,
+            zoom_ready
+          )
+        `);
+
+      if (error) throw error;
+
+      return data?.map(event => {
+        const registrations = event.tournament_registrations || [];
+        const zoomReadyCount = registrations.filter((r: any) => r.zoom_ready).length;
+        const zoomPercent = registrations.length > 0 ? Math.round((zoomReadyCount / registrations.length) * 100) : 0;
+        
+        return {
+          id: event.id,
+          name: event.name,
+          date: new Date(event.date).toLocaleDateString(),
+          time_control: event.time_control,
+          playerCount: registrations.length,
+          zoomReady: zoomPercent,
+          status: new Date(event.date) > new Date() ? 'Active' : 'Completed'
+        };
+      }) || [];
+    }
+  });
+
+  // Fetch players data
+  const { data: players, isLoading: playersLoading } = useQuery({
+    queryKey: ['admin-players'],
+    queryFn: async (): Promise<Player[]> => {
+      const { data, error } = await supabase
+        .from('tournament_registrations')
+        .select(`
+          id,
+          email,
+          current_rating,
+          zoom_ready,
+          setup_completed,
+          platform_username,
+          events!inner(name)
+        `)
+        .limit(20);
+
+      if (error) throw error;
+
+      return data?.map(reg => ({
+        id: reg.id,
+        name: reg.platform_username || reg.email.split('@')[0],
+        email: reg.email,
+        rating: reg.current_rating || 1200,
+        zoomReady: reg.zoom_ready,
+        tournament: reg.events?.name || 'Unknown',
+        status: reg.setup_completed ? 'Paid' : 'Pending'
+      })) || [];
+    }
+  });
+
+  const handleExportTournament = async (tournamentId: string) => {
+    console.log('Exporting tournament:', tournamentId);
+    // This would integrate with your export endpoint
+    // window.open(`/export-tornelo-csv/${tournamentId}`, '_blank');
   };
 
-  const tournaments = [
-    {
-      name: "Tuesday Blitz Arena",
-      date: "June 25, 2024",
-      format: "Swiss",
-      players: 32,
-      zoomReady: 85,
-      status: "Active"
-    },
-    {
-      name: "Friday Rapid Quads",
-      date: "June 28, 2024", 
-      format: "Quads",
-      players: 16,
-      zoomReady: 90,
-      status: "Registration"
-    },
-    {
-      name: "Weekend Blitz",
-      date: "June 29, 2024",
-      format: "Swiss",
-      players: 28,
-      zoomReady: 78,
-      status: "Setup"
-    }
-  ];
-
-  const players = [
-    {
-      name: "Jane Doe",
-      rating: 1523,
-      zoomReady: true,
-      tournament: "Blitz Arena",
-      status: "Paid"
-    },
-    {
-      name: "John Smith", 
-      rating: 1801,
-      zoomReady: false,
-      tournament: "Blitz Quads",
-      status: "Pending"
-    },
-    {
-      name: "Alice Johnson",
-      rating: 1645,
-      zoomReady: true,
-      tournament: "Weekend Blitz",
-      status: "Paid"
-    }
-  ];
+  if (metricsLoading) {
+    return <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">Loading...</div>;
+  }
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -83,9 +176,9 @@ const AdminDashboard = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overviewMetrics.totalPlayersToday}</div>
+            <div className="text-2xl font-bold">{metrics?.totalPlayersToday || 0}</div>
             <p className="text-xs text-muted-foreground">
-              +12% from yesterday
+              Live from Supabase
             </p>
           </CardContent>
         </Card>
@@ -98,9 +191,9 @@ const AdminDashboard = () => {
             <Trophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overviewMetrics.activeTournaments}</div>
+            <div className="text-2xl font-bold">{metrics?.activeTournaments || 0}</div>
             <p className="text-xs text-muted-foreground">
-              2 ending this week
+              Upcoming events
             </p>
           </CardContent>
         </Card>
@@ -113,9 +206,9 @@ const AdminDashboard = () => {
             <Video className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overviewMetrics.zoomConfirmedPercent}%</div>
+            <div className="text-2xl font-bold">{metrics?.zoomConfirmedPercent || 0}%</div>
             <p className="text-xs text-muted-foreground">
-              +5% from last week
+              Ready for tournaments
             </p>
           </CardContent>
         </Card>
@@ -123,14 +216,14 @@ const AdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Payouts Sent Today
+              Setups Completed Today
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overviewMetrics.payoutsSentToday}</div>
+            <div className="text-2xl font-bold">{metrics?.payoutsSentToday || 0}</div>
             <p className="text-xs text-muted-foreground">
-              $1,240 total
+              Registration complete
             </p>
           </CardContent>
         </Card>
@@ -153,41 +246,49 @@ const AdminDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Tournament</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Format</TableHead>
-                    <TableHead>Players</TableHead>
-                    <TableHead>Zoom Ready</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tournaments.map((tournament, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{tournament.name}</TableCell>
-                      <TableCell>{tournament.date}</TableCell>
-                      <TableCell>{tournament.format}</TableCell>
-                      <TableCell>{tournament.players}</TableCell>
-                      <TableCell>{tournament.zoomReady}%</TableCell>
-                      <TableCell>
-                        <Badge variant={tournament.status === 'Active' ? 'default' : 'secondary'}>
-                          {tournament.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          <Download className="h-4 w-4 mr-2" />
-                          Export CSV
-                        </Button>
-                      </TableCell>
+              {tournamentsLoading ? (
+                <div>Loading tournaments...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Tournament</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Time Control</TableHead>
+                      <TableHead>Players</TableHead>
+                      <TableHead>Zoom Ready</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {tournaments?.map((tournament) => (
+                      <TableRow key={tournament.id}>
+                        <TableCell className="font-medium">{tournament.name}</TableCell>
+                        <TableCell>{tournament.date}</TableCell>
+                        <TableCell>{tournament.time_control}</TableCell>
+                        <TableCell>{tournament.playerCount}</TableCell>
+                        <TableCell>{tournament.zoomReady}%</TableCell>
+                        <TableCell>
+                          <Badge variant={tournament.status === 'Active' ? 'default' : 'secondary'}>
+                            {tournament.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleExportTournament(tournament.id)}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Export CSV
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -201,44 +302,48 @@ const AdminDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Player</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Zoom Ready</TableHead>
-                    <TableHead>Tournament</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {players.map((player, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{player.name}</TableCell>
-                      <TableCell>{player.rating}</TableCell>
-                      <TableCell>
-                        {player.zoomReady ? (
-                          <Badge variant="default">✅ Ready</Badge>
-                        ) : (
-                          <Badge variant="destructive">❌ Not Ready</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>{player.tournament}</TableCell>
-                      <TableCell>
-                        <Badge variant={player.status === 'Paid' ? 'default' : 'secondary'}>
-                          {player.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          View Details
-                        </Button>
-                      </TableCell>
+              {playersLoading ? (
+                <div>Loading players...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Player</TableHead>
+                      <TableHead>Rating</TableHead>
+                      <TableHead>Zoom Ready</TableHead>
+                      <TableHead>Tournament</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {players?.map((player) => (
+                      <TableRow key={player.id}>
+                        <TableCell className="font-medium">{player.name}</TableCell>
+                        <TableCell>{player.rating}</TableCell>
+                        <TableCell>
+                          {player.zoomReady ? (
+                            <Badge variant="default">✅ Ready</Badge>
+                          ) : (
+                            <Badge variant="destructive">❌ Not Ready</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{player.tournament}</TableCell>
+                        <TableCell>
+                          <Badge variant={player.status === 'Paid' ? 'default' : 'secondary'}>
+                            {player.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
