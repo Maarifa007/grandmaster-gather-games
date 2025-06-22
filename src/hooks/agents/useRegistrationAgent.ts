@@ -1,13 +1,15 @@
 
 import { AgentContext, AgentResponse } from '@/types/agents';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 export const useRegistrationAgent = () => {
-  const { toast } = useToast();
-
   const processMessage = async (message: string, context: AgentContext): Promise<AgentResponse> => {
     const lowerMessage = message.toLowerCase();
+
+    // Handle registration completion
+    if (lowerMessage.includes('registration complete') || lowerMessage.includes('payment successful')) {
+      return handleRegistrationComplete();
+    }
 
     // Handle tournament selection
     if (lowerMessage.includes('tournament') || lowerMessage.includes('register')) {
@@ -31,6 +33,27 @@ export const useRegistrationAgent = () => {
         "📝 Start Registration Process",
         "📅 View Available Tournaments",
         "❓ Registration Requirements"
+      ]
+    };
+  };
+
+  const handleRegistrationComplete = (): AgentResponse => {
+    return {
+      message: "🎉 Registration successful!\n\n" +
+              "You should receive a confirmation email shortly with:\n" +
+              "✅ Tournament details and schedule\n" +
+              "✅ Zoom meeting link\n" +
+              "✅ Tornelo tournament link\n" +
+              "✅ Setup instructions\n\n" +
+              "Ready to set up Zoom for tournament play?",
+      options: [
+        "📱 Mobile Zoom Setup",
+        "💻 Desktop Zoom Setup",
+        "📧 Resend Confirmation",
+        "🎯 Fair Play Guidelines"
+      ],
+      actions: [
+        { type: 'triggerZoomSetup', payload: true }
       ]
     };
   };

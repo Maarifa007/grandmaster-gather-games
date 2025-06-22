@@ -16,6 +16,7 @@ export const useChatBotV2 = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentInput, setCurrentInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [shouldTriggerZoomSetup, setShouldTriggerZoomSetup] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { processMessage, currentAgent } = useAgentDispatcher();
 
@@ -26,6 +27,28 @@ export const useChatBotV2 = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-trigger Zoom setup after registration
+  useEffect(() => {
+    if (shouldTriggerZoomSetup) {
+      const timer = setTimeout(() => {
+        addBotMessage(
+          "Are you playing on a phone or computer? I can help you set up Zoom for fair play. 📷\n\n" +
+          "Proper setup ensures a smooth tournament experience!",
+          [
+            "📱 Mobile Setup Help",
+            "💻 Desktop Setup Help", 
+            "❓ What's the difference?",
+            "✅ I'm already set up"
+          ],
+          'fairplay'
+        );
+        setShouldTriggerZoomSetup(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [shouldTriggerZoomSetup]);
 
   const addBotMessage = (text: string, options?: string[], agent?: string) => {
     const newMessage: Message = {
@@ -73,6 +96,9 @@ export const useChatBotV2 = () => {
               window.location.href = action.payload;
             }, 1000);
           }
+          if (action.type === 'triggerZoomSetup') {
+            setShouldTriggerZoomSetup(true);
+          }
         });
       }
     } catch (error) {
@@ -95,6 +121,11 @@ export const useChatBotV2 = () => {
       handleMessage(input.trim());
       setInput('');
     }
+  };
+
+  // Trigger Zoom setup from external components
+  const triggerZoomSetup = () => {
+    setShouldTriggerZoomSetup(true);
   };
 
   // Initialize with welcome message
@@ -127,6 +158,7 @@ export const useChatBotV2 = () => {
     isProcessing,
     currentAgent,
     handleOptionClick,
-    handleInputSubmit
+    handleInputSubmit,
+    triggerZoomSetup
   };
 };
