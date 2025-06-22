@@ -60,10 +60,12 @@ const Hero = () => {
           </div>
           
           <div className="relative h-[500px] overflow-hidden flex items-center justify-center">
-            {/* Placeholder for future image */}
-            <div className="w-full h-full bg-gray-200 rounded-2xl shadow-2xl flex items-center justify-center">
-              <p className="text-gray-500 text-lg font-medium">Image Coming</p>
-            </div>
+            {/* GSCI Hero Image */}
+            <img 
+              src="/assets/gsci_hero.png" 
+              alt="GSCI Tournament Chess Board" 
+              className="w-full h-full object-cover rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </div>
