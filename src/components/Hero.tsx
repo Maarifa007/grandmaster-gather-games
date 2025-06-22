@@ -1,46 +1,10 @@
+
 import { Play, Heart, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Hero = () => {
   return (
     <section className="relative bg-gradient-to-br from-slate-50 to-slate-100 py-20 overflow-hidden">
-      {/* Simple Floating Chess Pieces using Unicode symbols */}
-      
-      {/* Rook - Bottom Left */}
-      <div className="absolute bottom-10 left-10 text-6xl text-gray-400 opacity-30 z-0">
-        ♜
-      </div>
-
-      {/* Bishop - Top Right */}
-      <div className="absolute top-16 right-16 text-5xl text-gray-500 opacity-25 z-0 rotate-12">
-        ♝
-      </div>
-
-      {/* Knight - Top Left */}
-      <div className="absolute top-20 left-20 text-4xl text-gray-400 opacity-20 z-0 -rotate-6">
-        ♞
-      </div>
-
-      {/* Pawn - Middle Right */}
-      <div className="absolute top-32 right-32 text-3xl text-gray-500 opacity-15 z-0 rotate-45">
-        ♟
-      </div>
-
-      {/* Queen - Bottom Right */}
-      <div className="absolute bottom-16 right-20 text-7xl text-gray-400 opacity-35 z-0 -rotate-12">
-        ♛
-      </div>
-
-      {/* Additional Small Pawn - Center Top */}
-      <div className="absolute top-8 right-1/3 text-2xl text-gray-500 opacity-12 z-0 rotate-90">
-        ♟
-      </div>
-
-      {/* King - Center Left */}
-      <div className="absolute top-1/2 left-8 text-5xl text-gray-400 opacity-18 z-0 rotate-15">
-        ♚
-      </div>
-
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 z-10 relative">
@@ -96,12 +60,10 @@ const Hero = () => {
           </div>
           
           <div className="relative h-[500px] overflow-hidden flex items-center justify-center">
-            {/* GSCI Hero Image */}
-            <img 
-              src="/assets/gsci_hero.png" 
-              alt="GSCI Tournament Chess Board" 
-              className="w-full h-full object-cover rounded-2xl shadow-2xl"
-            />
+            {/* Placeholder for future image */}
+            <div className="w-full h-full bg-gray-200 rounded-2xl shadow-2xl flex items-center justify-center">
+              <p className="text-gray-500 text-lg font-medium">Image Coming</p>
+            </div>
           </div>
         </div>
       </div>
