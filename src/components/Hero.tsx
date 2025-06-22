@@ -1,3 +1,4 @@
+
 import { Play, Heart, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -89,25 +90,22 @@ const Hero = () => {
               USCF Rated Tournaments
             </div>
             
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
-              Play. Win.
-              <span className="text-green-700"> Do </span>
-              <span className="text-amber-600">Good.</span>
+            <h1 className="text-5xl font-bold text-gray-900 leading-tight">
+              Daily Rated Blitz Tournaments — For Cash
             </h1>
             
             <p className="text-xl text-gray-600 leading-relaxed">
-              Nightly USCF-Rated Blitz Tournaments with Cash Prizes supporting hospitals, 
-              libraries, and youth programs worldwide.
+              Win real cash prizes in officially rated USCF blitz events. Hosted online. Powered by purpose.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg transition-transform hover:-translate-y-1 shadow-lg"
+              <a 
+                href="/register" 
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-lg text-lg font-medium transition-transform hover:-translate-y-1"
               >
                 <span className="mr-2">♟</span>
-                Register Now
-              </Button>
+                Register Now — $15 Entry
+              </a>
               <Button 
                 size="lg" 
                 variant="outline" 
@@ -117,6 +115,10 @@ const Hero = () => {
                 Donate Today
               </Button>
             </div>
+            
+            <p className="text-sm text-gray-500">
+              70% to prizes. 30% funds nonprofit chess outreach.
+            </p>
             
             <div className="flex items-center space-x-8 pt-4">
               <div className="text-center">
