@@ -15,7 +15,7 @@ export interface AgentResponse {
 }
 
 export interface AgentAction {
-  type: 'redirect' | 'email' | 'webhook' | 'update_db';
+  type: 'redirect' | 'email' | 'webhook' | 'update_db' | 'triggerZoomSetup';
   payload: any;
 }
 
