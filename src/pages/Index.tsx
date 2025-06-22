@@ -5,7 +5,7 @@ import FeaturesSection from '@/components/FeaturesSection';
 import UpcomingTournaments from '@/components/UpcomingTournaments';
 import DonationBanner from '@/components/DonationBanner';
 import Footer from '@/components/Footer';
-import ChatBot from '@/components/ChatBot';
+import ChatBotV2 from '@/components/ChatBotV2';
 
 const Index = () => {
   return (
@@ -16,7 +16,7 @@ const Index = () => {
       <UpcomingTournaments />
       <DonationBanner />
       <Footer />
-      <ChatBot />
+      <ChatBotV2 />
     </div>
   );
 };

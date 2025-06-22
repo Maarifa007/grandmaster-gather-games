@@ -8,12 +8,15 @@ interface ChatInputProps {
   currentInput: string;
   setCurrentInput: (value: string) => void;
   onSubmit: (currentInput: string, setCurrentInput: (value: string) => void) => void;
+  disabled?: boolean;
 }
 
-export const ChatInput = ({ currentInput, setCurrentInput, onSubmit }: ChatInputProps) => {
+export const ChatInput = ({ currentInput, setCurrentInput, onSubmit, disabled = false }: ChatInputProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(currentInput, setCurrentInput);
+    if (!disabled) {
+      onSubmit(currentInput, setCurrentInput);
+    }
   };
 
   return (
@@ -22,10 +25,16 @@ export const ChatInput = ({ currentInput, setCurrentInput, onSubmit }: ChatInput
         <Input
           value={currentInput}
           onChange={(e) => setCurrentInput(e.target.value)}
-          placeholder="Type your message..."
+          placeholder={disabled ? "Processing..." : "Type your message..."}
           className="flex-1"
+          disabled={disabled}
         />
-        <Button type="submit" size="icon" className="bg-green-700 hover:bg-green-800">
+        <Button 
+          type="submit" 
+          size="icon" 
+          className="bg-green-700 hover:bg-green-800"
+          disabled={disabled || !currentInput.trim()}
+        >
           <Send className="h-4 w-4" />
         </Button>
       </div>
