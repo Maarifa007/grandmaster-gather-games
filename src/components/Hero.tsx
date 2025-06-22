@@ -63,7 +63,7 @@ const Hero = () => {
             <img 
               src="/lovable-uploads/017e2bc5-dedd-42bc-a849-2239a28d9a19.png" 
               alt="Speed Chess - Chess clock with chess pieces" 
-              className="w-full h-full object-contain rounded-2xl shadow-2xl"
+              className="w-[110%] h-full object-contain rounded-2xl shadow-2xl"
             />
           </div>
         </div>
