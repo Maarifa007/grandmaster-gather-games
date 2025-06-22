@@ -1,4 +1,3 @@
-
 import { Play, Heart, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -99,13 +98,13 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="/register" 
-                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-lg text-lg font-medium transition-transform hover:-translate-y-1"
+              <Button 
+                size="lg" 
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-medium transition-transform hover:-translate-y-1 shadow-lg"
               >
                 <span className="mr-2">♟</span>
-                Register Now — $15 Entry
-              </a>
+                Register Now
+              </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
