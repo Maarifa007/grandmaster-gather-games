@@ -27,7 +27,7 @@ const Hero = () => {
           <rect x="20" y="25" width="10" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
           <rect x="35" y="25" width="10" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
           <rect x="55" y="25" width="10" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-          <rect x="70" y="25" width="10" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+          <rect x="70" y="25" width="10" height="10" stroke="currentColor" strokeWidth="1" fill="none"/>
         </svg>
       </div>
 
@@ -85,30 +85,11 @@ const Hero = () => {
           </div>
           
           <div className="relative">
-            <div className="bg-gradient-to-br from-green-600 to-amber-600 rounded-2xl p-8 transform rotate-3 shadow-2xl transition-transform hover:rotate-3 hover:scale-105">
-              <div className="bg-white rounded-xl p-6 transform -rotate-6">
-                <div className="grid grid-cols-8 gap-1">
-                  {/* Chess board pattern */}
-                  {Array.from({ length: 64 }, (_, i) => {
-                    const row = Math.floor(i / 8);
-                    const col = i % 8;
-                    const isLight = (row + col) % 2 === 0;
-                    return (
-                      <div
-                        key={i}
-                        className={`w-6 h-6 ${
-                          isLight ? 'bg-amber-100' : 'bg-green-200'
-                        }`}
-                      />
-                    );
-                  })}
-                </div>
-                <div className="mt-4 text-center">
-                  <div className="text-green-800 font-bold">Live Tournament</div>
-                  <div className="text-sm text-gray-600">3+2 Blitz • USCF Rated</div>
-                </div>
-              </div>
-            </div>
+            <img
+              src="/assets/gsci_hero.png"
+              alt="Global Speed Chess Hero"
+              className="w-full h-[500px] object-cover rounded-xl shadow-2xl transform rotate-3 transition-transform hover:rotate-1 hover:scale-105"
+            />
           </div>
         </div>
       </div>
