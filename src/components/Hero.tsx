@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 const Hero = () => {
   return (
     <section className="relative bg-gradient-to-br from-slate-50 to-slate-100 py-20 overflow-hidden">
-      {/* Simplified Rook SVG Overlay - Better positioning */}
-      <div className="absolute bottom-10 left-10 opacity-10 w-32 h-32 z-0">
+      {/* Multiple Floating Chess Pieces */}
+      
+      {/* Rook - Bottom Left */}
+      <div className="absolute bottom-10 left-10 opacity-15 w-32 h-32 z-0">
         <svg viewBox="0 0 100 100" className="w-full h-full">
           <rect x="25" y="70" width="50" height="15" stroke="#374151" strokeWidth="1.5" fill="#F3F4F6"/>
           <rect x="30" y="35" width="40" height="35" stroke="#374151" strokeWidth="1.5" fill="#F3F4F6"/>
@@ -13,6 +15,62 @@ const Hero = () => {
           <rect x="36" y="30" width="8" height="8" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
           <rect x="56" y="30" width="8" height="8" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
           <rect x="67" y="30" width="8" height="8" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+        </svg>
+      </div>
+
+      {/* Bishop - Top Right */}
+      <div className="absolute top-16 right-16 opacity-12 w-28 h-28 z-0 rotate-12">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <rect x="30" y="75" width="40" height="12" stroke="#4B5563" strokeWidth="1.5" fill="#E5E7EB"/>
+          <ellipse cx="50" cy="65" rx="18" ry="12" stroke="#4B5563" strokeWidth="1.5" fill="#E5E7EB"/>
+          <ellipse cx="50" cy="45" rx="14" ry="20" stroke="#4B5563" strokeWidth="1.5" fill="#E5E7EB"/>
+          <circle cx="50" cy="25" r="8" stroke="#4B5563" strokeWidth="1.5" fill="#E5E7EB"/>
+          <line x1="50" y1="17" x2="50" y2="12" stroke="#4B5563" strokeWidth="2" strokeLinecap="round"/>
+          <circle cx="46" cy="15" r="1.5" fill="#4B5563"/>
+          <circle cx="54" cy="15" r="1.5" fill="#4B5563"/>
+        </svg>
+      </div>
+
+      {/* Knight - Top Left */}
+      <div className="absolute top-20 left-20 opacity-10 w-24 h-24 z-0 -rotate-6">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <rect x="25" y="75" width="50" height="12" stroke="#6B7280" strokeWidth="1.5" fill="#F9FAFB"/>
+          <path d="M30 75 Q35 65 40 55 Q45 45 50 40 Q55 35 60 40 Q65 45 70 50 Q65 60 60 70 Q55 75 50 75 Z" 
+                stroke="#6B7280" strokeWidth="1.5" fill="#F9FAFB"/>
+          <circle cx="52" cy="45" r="2" fill="#6B7280"/>
+          <path d="M48 50 Q52 52 56 50" stroke="#6B7280" strokeWidth="1" fill="none"/>
+        </svg>
+      </div>
+
+      {/* Pawn - Middle Right */}
+      <div className="absolute top-32 right-32 opacity-8 w-20 h-20 z-0 rotate-45">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <rect x="35" y="75" width="30" height="10" stroke="#9CA3AF" strokeWidth="1.5" fill="#F3F4F6"/>
+          <rect x="40" y="65" width="20" height="15" stroke="#9CA3AF" strokeWidth="1.5" fill="#F3F4F6"/>
+          <circle cx="50" cy="45" r="12" stroke="#9CA3AF" strokeWidth="1.5" fill="#F3F4F6"/>
+        </svg>
+      </div>
+
+      {/* Queen - Bottom Right */}
+      <div className="absolute bottom-16 right-20 opacity-12 w-36 h-36 z-0 -rotate-12">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <rect x="25" y="75" width="50" height="12" stroke="#374151" strokeWidth="1.5" fill="#F3F4F6"/>
+          <ellipse cx="50" cy="60" rx="20" ry="15" stroke="#374151" strokeWidth="1.5" fill="#F3F4F6"/>
+          <circle cx="50" cy="35" r="10" stroke="#374151" strokeWidth="1.5" fill="#F3F4F6"/>
+          <circle cx="35" cy="25" r="4" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+          <circle cx="42" cy="20" r="5" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+          <circle cx="50" cy="18" r="6" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+          <circle cx="58" cy="20" r="5" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+          <circle cx="65" cy="25" r="4" stroke="#374151" strokeWidth="1" fill="#F3F4F6"/>
+        </svg>
+      </div>
+
+      {/* Additional Small Pawn - Center Top */}
+      <div className="absolute top-8 right-1/3 opacity-6 w-16 h-16 z-0 rotate-90">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <rect x="35" y="75" width="30" height="10" stroke="#D1D5DB" strokeWidth="1" fill="#F9FAFB"/>
+          <rect x="40" y="65" width="20" height="15" stroke="#D1D5DB" strokeWidth="1" fill="#F9FAFB"/>
+          <circle cx="50" cy="45" r="12" stroke="#D1D5DB" strokeWidth="1" fill="#F9FAFB"/>
         </svg>
       </div>
 
