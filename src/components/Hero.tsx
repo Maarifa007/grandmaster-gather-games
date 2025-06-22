@@ -60,10 +60,11 @@ const Hero = () => {
           </div>
           
           <div className="relative h-[500px] overflow-hidden flex items-center justify-center">
-            {/* Placeholder for future image */}
-            <div className="w-full h-full bg-gray-200 rounded-2xl shadow-2xl flex items-center justify-center">
-              <p className="text-gray-500 text-lg font-medium">Image Coming</p>
-            </div>
+            <img 
+              src="/lovable-uploads/017e2bc5-dedd-42bc-a849-2239a28d9a19.png" 
+              alt="Speed Chess - Chess clock with chess pieces" 
+              className="w-full h-full object-contain rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </div>
