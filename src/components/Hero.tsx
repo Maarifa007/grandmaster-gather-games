@@ -84,12 +84,51 @@ const Hero = () => {
             </div>
           </div>
           
-          <div className="relative">
-            <img
-              src="/assets/gsci_hero.png"
-              alt="Global Speed Chess Hero"
-              className="w-full h-[500px] object-cover rounded-xl shadow-2xl transform rotate-3 transition-transform hover:rotate-1 hover:scale-105"
-            />
+          <div className="relative h-[500px] overflow-hidden">
+            {/* Floating Chess Pieces */}
+            <div className="absolute inset-0">
+              {/* King */}
+              <div className="absolute top-20 left-16 text-6xl text-green-600 animate-bounce opacity-80">
+                ♔
+              </div>
+              
+              {/* Queen */}
+              <div className="absolute top-32 right-20 text-5xl text-amber-600 animate-pulse opacity-90" style={{animationDelay: '0.5s'}}>
+                ♕
+              </div>
+              
+              {/* Rook */}
+              <div className="absolute bottom-40 left-8 text-4xl text-green-700 animate-bounce opacity-70" style={{animationDelay: '1s'}}>
+                ♖
+              </div>
+              
+              {/* Bishop */}
+              <div className="absolute top-16 right-8 text-5xl text-amber-500 animate-pulse opacity-85" style={{animationDelay: '1.5s'}}>
+                ♗
+              </div>
+              
+              {/* Knight */}
+              <div className="absolute bottom-20 right-16 text-6xl text-green-800 animate-bounce opacity-75" style={{animationDelay: '2s'}}>
+                ♘
+              </div>
+              
+              {/* Pawn */}
+              <div className="absolute top-40 left-32 text-4xl text-amber-700 animate-pulse opacity-80" style={{animationDelay: '2.5s'}}>
+                ♙
+              </div>
+              
+              {/* Additional floating pieces */}
+              <div className="absolute bottom-32 left-24 text-3xl text-green-500 animate-bounce opacity-60" style={{animationDelay: '3s'}}>
+                ♗
+              </div>
+              
+              <div className="absolute top-8 left-40 text-4xl text-amber-800 animate-pulse opacity-70" style={{animationDelay: '3.5s'}}>
+                ♜
+              </div>
+            </div>
+            
+            {/* Background gradient circle for visual interest */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 to-amber-100/30 rounded-full transform scale-150 -translate-y-10"></div>
           </div>
         </div>
       </div>
