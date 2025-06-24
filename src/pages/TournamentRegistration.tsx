@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Heart, Trophy, Users, CheckCircle, ExternalLink, Monitor } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -20,6 +21,8 @@ const TournamentRegistration = () => {
   const [rating, setRating] = useState('');
   const [email, setEmail] = useState('');
   const [selectedTournament, setSelectedTournament] = useState('');
+  const [needsUscfMembership, setNeedsUscfMembership] = useState(false);
+  const [membershipType, setMembershipType] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [donationAmount, setDonationAmount] = useState<string>('');
@@ -65,6 +68,17 @@ const TournamentRegistration = () => {
     },
   ];
 
+  const membershipFees = {
+    adult: 45,
+    scholastic: 20
+  };
+
+  const calculateTotal = () => {
+    const entryFee = 15;
+    const membershipFee = needsUscfMembership && membershipType ? membershipFees[membershipType as keyof typeof membershipFees] : 0;
+    return entryFee + membershipFee;
+  };
+
   const handlePayment = async () => {
     if (!selectedTournament || !platform || !username || !email) {
       toast({
@@ -75,19 +89,41 @@ const TournamentRegistration = () => {
       return;
     }
 
+    if (needsUscfMembership && !membershipType) {
+      toast({
+        title: "Missing membership type",
+        description: "Please select a membership type",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
-      // Here you would integrate with your payment processor
-      // For now, we'll simulate the registration process
-      
       const tournamentData = tournaments.find(t => t.id === selectedTournament);
       setSelectedTournamentData(tournamentData);
       
-      // Simulate payment processing
+      // Simulate payment processing with new membership data
+      const totalAmount = calculateTotal();
+      const membershipFee = needsUscfMembership && membershipType ? membershipFees[membershipType as keyof typeof membershipFees] : 0;
+      
+      console.log('Processing registration with:', {
+        platform,
+        username,
+        email,
+        uscfId,
+        rating,
+        tournament: selectedTournament,
+        needsUscfMembership,
+        membershipType,
+        membershipFee,
+        totalPaid: totalAmount
+      });
+      
       setTimeout(() => {
         setIsRegistered(true);
         toast({
           title: "Registration successful!",
-          description: "Check your email for tournament details and join links.",
+          description: `Payment of $${totalAmount} processed. Check your email for tournament details.`,
         });
       }, 1500);
     } catch (error) {
@@ -132,6 +168,9 @@ const TournamentRegistration = () => {
   }
 
   if (isRegistered) {
+    const membershipFee = needsUscfMembership && membershipType ? membershipFees[membershipType as keyof typeof membershipFees] : 0;
+    const totalPaid = calculateTotal();
+    
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -148,7 +187,7 @@ const TournamentRegistration = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="font-semibold text-green-800 mb-4">Tournament Details</h3>
+                <h3 className="font-semibold text-green-800 mb-4">Registration Details</h3>
                 <div className="space-y-2 text-left">
                   <div className="flex justify-between">
                     <span className="text-green-700">Tournament:</span>
@@ -158,7 +197,28 @@ const TournamentRegistration = () => {
                     <span className="text-green-700">Date & Time:</span>
                     <span className="font-medium">{selectedTournamentData?.date} at {selectedTournamentData?.time}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-green-700">Entry Fee (includes rating fees):</span>
+                    <span className="font-medium">$15.00</span>
+                  </div>
+                  {needsUscfMembership && (
+                    <div className="flex justify-between">
+                      <span className="text-green-700">USCF Membership ({membershipType}):</span>
+                      <span className="font-medium">${membershipFee}.00</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t pt-2">
+                    <span className="text-green-700 font-semibold">Total Paid:</span>
+                    <span className="font-bold">${totalPaid}.00</span>
+                  </div>
                 </div>
+                {needsUscfMembership && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
+                    <p className="text-blue-800 text-sm">
+                      ✅ You purchased a USCF membership. GSCI will submit this to US Chess with your results.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-3 justify-center flex-wrap">
@@ -321,6 +381,36 @@ const TournamentRegistration = () => {
                 />
               </div>
 
+              {/* USCF Membership Section */}
+              <div className="space-y-4 p-4 border border-blue-200 rounded-lg bg-blue-50">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="uscf-membership" 
+                    checked={needsUscfMembership}
+                    onCheckedChange={setNeedsUscfMembership}
+                  />
+                  <Label htmlFor="uscf-membership" className="text-base font-medium">
+                    Do you need to purchase a US Chess Membership?
+                  </Label>
+                </div>
+                
+                {needsUscfMembership && (
+                  <div className="space-y-3 ml-6">
+                    <Label className="text-sm text-gray-700">Select Membership Type:</Label>
+                    <RadioGroup value={membershipType} onValueChange={setMembershipType}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="scholastic" id="scholastic" />
+                        <Label htmlFor="scholastic">Scholastic (under 19) - $20</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="adult" id="adult" />
+                        <Label htmlFor="adult">Adult - $45</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
+              </div>
+
               {/* Tournament Selection */}
               <div className="space-y-2">
                 <Label>Select Tournament</Label>
@@ -338,13 +428,25 @@ const TournamentRegistration = () => {
                 </Select>
               </div>
 
-              {/* Entry Fee Confirmation */}
+              {/* Payment Breakdown */}
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl">💲</span>
-                  <span className="font-semibold text-green-800">Entry Fee: $10</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-green-800 font-medium">Entry Fee (includes rating fees):</span>
+                    <span className="font-semibold">$15.00</span>
+                  </div>
+                  {needsUscfMembership && membershipType && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-green-800 font-medium">USCF Membership ({membershipType}):</span>
+                      <span className="font-semibold">${membershipFees[membershipType as keyof typeof membershipFees]}.00</span>
+                    </div>
+                  )}
+                  <div className="border-t border-green-300 pt-2 flex justify-between items-center">
+                    <span className="text-green-800 font-bold text-lg">Total:</span>
+                    <span className="font-bold text-lg">${calculateTotal()}.00</span>
+                  </div>
                 </div>
-                <p className="text-green-700 text-sm flex items-center gap-1">
+                <p className="text-green-700 text-sm mt-2 flex items-center gap-1">
                   <CheckCircle className="h-4 w-4" />
                   70% goes to prizes – 30% helps fund Chess in Schools!
                 </p>
@@ -353,10 +455,10 @@ const TournamentRegistration = () => {
               {/* Payment Button */}
               <Button 
                 onClick={handlePayment}
-                disabled={!platform || !username || !email || !selectedTournament}
+                disabled={!platform || !username || !email || !selectedTournament || (needsUscfMembership && !membershipType)}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg"
               >
-                Pay with PayPal - $10
+                Pay with PayPal - ${calculateTotal()}
               </Button>
 
               {/* Support Message */}

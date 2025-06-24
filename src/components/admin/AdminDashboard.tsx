@@ -14,6 +14,8 @@ interface OverviewMetrics {
   activeTournaments: number;
   zoomConfirmedPercent: number;
   payoutsSentToday: number;
+  totalUscfFeesOwed: number;
+  membershipsSold: number;
 }
 
 interface Tournament {
@@ -34,6 +36,11 @@ interface Player {
   zoomReady: boolean;
   tournament: string;
   status: string;
+  uscfMembershipPurchased: boolean;
+  uscfMembershipFee: number;
+  gamesCount: number;
+  ratingFeeOwed: number;
+  totalPaid: number;
 }
 
 const AdminDashboard = () => {
@@ -73,11 +80,21 @@ const AdminDashboard = () => {
         .gte('registered_at', `${today}T00:00:00`)
         .lt('registered_at', `${today}T23:59:59`);
 
+      // Total USCF fees owed and memberships sold
+      const { data: uscfData } = await supabase
+        .from('tournament_registrations')
+        .select('rating_fee_owed, uscf_membership_purchased, uscf_membership_fee');
+      
+      const totalUscfFeesOwed = uscfData?.reduce((sum, reg) => sum + (reg.rating_fee_owed || 0), 0) || 0;
+      const membershipsSold = uscfData?.filter(reg => reg.uscf_membership_purchased).length || 0;
+
       return {
         totalPlayersToday: playersToday || 0,
         activeTournaments: activeTournaments || 0,
         zoomConfirmedPercent: zoomPercent,
-        payoutsSentToday: payoutsToday || 0
+        payoutsSentToday: payoutsToday || 0,
+        totalUscfFeesOwed: Number(totalUscfFeesOwed.toFixed(2)),
+        membershipsSold
       };
     }
   });
@@ -119,7 +136,7 @@ const AdminDashboard = () => {
     }
   });
 
-  // Fetch players data
+  // Fetch players data with USCF tracking
   const { data: players, isLoading: playersLoading } = useQuery({
     queryKey: ['admin-players'],
     queryFn: async (): Promise<Player[]> => {
@@ -132,6 +149,11 @@ const AdminDashboard = () => {
           zoom_ready,
           setup_completed,
           platform_username,
+          uscf_membership_purchased,
+          uscf_membership_fee,
+          games_count,
+          rating_fee_owed,
+          total_paid,
           events!inner(name)
         `)
         .limit(20);
@@ -145,7 +167,12 @@ const AdminDashboard = () => {
         rating: reg.current_rating || 1200,
         zoomReady: reg.zoom_ready,
         tournament: reg.events?.name || 'Unknown',
-        status: reg.setup_completed ? 'Paid' : 'Pending'
+        status: reg.setup_completed ? 'Paid' : 'Pending',
+        uscfMembershipPurchased: reg.uscf_membership_purchased,
+        uscfMembershipFee: reg.uscf_membership_fee || 0,
+        gamesCount: reg.games_count || 0,
+        ratingFeeOwed: reg.rating_fee_owed || 0,
+        totalPaid: reg.total_paid || 15
       })) || [];
     }
   });
@@ -167,11 +194,11 @@ const AdminDashboard = () => {
       </div>
       
       {/* Overview Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Players Registered Today
+              Players Today
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -216,26 +243,109 @@ const AdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Setups Completed Today
+              Setups Complete
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics?.payoutsSentToday || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Registration complete
+              Today
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              USCF Fees Owed
+            </CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${metrics?.totalUscfFeesOwed || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              Rating fees to pay
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Memberships Sold
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics?.membershipsSold || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              USCF memberships
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="tournaments" className="space-y-4">
+      <Tabs defaultValue="players" className="space-y-4">
         <TabsList>
+          <TabsTrigger value="players">USCF Player Tracking</TabsTrigger>
           <TabsTrigger value="tournaments">Tournament Management</TabsTrigger>
-          <TabsTrigger value="players">Player Details</TabsTrigger>
           <TabsTrigger value="tools">Admin Tools</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="players" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>USCF Player Management</CardTitle>
+              <CardDescription>
+                Track USCF memberships, games played, and rating fees owed
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {playersLoading ? (
+                <div>Loading players...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Player</TableHead>
+                      <TableHead>USCF Fee Paid</TableHead>
+                      <TableHead>Games Count</TableHead>
+                      <TableHead>Rating Fee Owed</TableHead>
+                      <TableHead>Total Paid</TableHead>
+                      <TableHead>Tournament</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {players?.map((player) => (
+                      <TableRow key={player.id}>
+                        <TableCell className="font-medium">{player.name}</TableCell>
+                        <TableCell>
+                          {player.uscfMembershipPurchased ? (
+                            <Badge variant="default">✅ ${player.uscfMembershipFee}</Badge>
+                          ) : (
+                            <Badge variant="secondary">No</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{player.gamesCount}</TableCell>
+                        <TableCell>${player.ratingFeeOwed.toFixed(2)}</TableCell>
+                        <TableCell>${player.totalPaid.toFixed(2)}</TableCell>
+                        <TableCell>{player.tournament}</TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="tournaments" className="space-y-4">
           <Card>
@@ -293,61 +403,6 @@ const AdminDashboard = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="players" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Player Management</CardTitle>
-              <CardDescription>
-                View and manage registered players
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {playersLoading ? (
-                <div>Loading players...</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Player</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Zoom Ready</TableHead>
-                      <TableHead>Tournament</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {players?.map((player) => (
-                      <TableRow key={player.id}>
-                        <TableCell className="font-medium">{player.name}</TableCell>
-                        <TableCell>{player.rating}</TableCell>
-                        <TableCell>
-                          {player.zoomReady ? (
-                            <Badge variant="default">✅ Ready</Badge>
-                          ) : (
-                            <Badge variant="destructive">❌ Not Ready</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>{player.tournament}</TableCell>
-                        <TableCell>
-                          <Badge variant={player.status === 'Paid' ? 'default' : 'secondary'}>
-                            {player.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="tools" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
@@ -359,6 +414,10 @@ const AdminDashboard = () => {
                 <Button className="w-full">
                   <Download className="h-4 w-4 mr-2" />
                   Export Player List for Tornelo
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export USCF Payment Report
                 </Button>
                 <Button variant="outline" className="w-full">
                   <Download className="h-4 w-4 mr-2" />

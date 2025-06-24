@@ -197,13 +197,18 @@ export type Database = {
           camera_overlay_confirmed: boolean | null
           current_rating: number | null
           email: string
+          games_count: number | null
           id: string
           platform: string
           platform_username: string
+          rating_fee_owed: number | null
           registered_at: string
           setup_completed: boolean | null
+          total_paid: number | null
           tournament_id: string
           uscf_id: string | null
+          uscf_membership_fee: number | null
+          uscf_membership_purchased: boolean | null
           user_id: string
           zoom_joined: boolean | null
           zoom_ready: boolean | null
@@ -212,13 +217,18 @@ export type Database = {
           camera_overlay_confirmed?: boolean | null
           current_rating?: number | null
           email: string
+          games_count?: number | null
           id?: string
           platform: string
           platform_username: string
+          rating_fee_owed?: number | null
           registered_at?: string
           setup_completed?: boolean | null
+          total_paid?: number | null
           tournament_id: string
           uscf_id?: string | null
+          uscf_membership_fee?: number | null
+          uscf_membership_purchased?: boolean | null
           user_id: string
           zoom_joined?: boolean | null
           zoom_ready?: boolean | null
@@ -227,13 +237,18 @@ export type Database = {
           camera_overlay_confirmed?: boolean | null
           current_rating?: number | null
           email?: string
+          games_count?: number | null
           id?: string
           platform?: string
           platform_username?: string
+          rating_fee_owed?: number | null
           registered_at?: string
           setup_completed?: boolean | null
+          total_paid?: number | null
           tournament_id?: string
           uscf_id?: string | null
+          uscf_membership_fee?: number | null
+          uscf_membership_purchased?: boolean | null
           user_id?: string
           zoom_joined?: boolean | null
           zoom_ready?: boolean | null
